@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<html lang="en">
+<head>
+  <title>Bootstrap Example</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+  <style>
+
+    /* Remove the navbar's default margin-bottom and rounded borders */
+    .navbar {
+      background-color: black;
+      margin-bottom: 0;
+      border-radius: 0;
+    }
+
+    /* img {
+    max-width: 100%;
+    height: auto;
+    } */
+
+    .navbar-text{
+      color: red;
+    }
+
+    /* Set height of the grid so .sidenav can be 100% (adjust as needed) */
+    .row.content {height: 100%}
+
+    /* Set gray background color and 100% height */
+    .sidenav {
+      padding-top: 20px;
+      background-color: white;/*#f1f1f1*/;
+      height: 100%;
+    }
+
+    /* Set black background color, white text and some padding */
+    footer {
+      position: fixed;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      background-color: #f1f1f1;
+      color: red;
+      text-align: center;
+      padding: 15px;
+    }
+
+    /* On small screens, set height to 'auto' for sidenav and grid */
+    @media screen and (max-width: 767px) {
+      .sidenav {
+        height: auto;
+        padding: 15px;
+      }
+
+      .row.content {height:auto;}
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <!-- <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button> -->
+      <a class="navbar-brand" href="#">Our Logo</a>
+      <span class="navbar-text">
+        Our ad here!!!
+      </span>
+    </div>
+    <!-- <div class="collapse navbar-collapse" id="myNavbar">
+      <a class="navbar-brand" href="#">Ad 1</a>
+    </div> -->
+  </div>
+</nav>
+
+<div class="container-fluid text-center">
+    <div class="row content">
+        <div class="col-sm-3 sidenav">
+            <div class="embed-responsive embed-responsive-4by3">
+              <p>Ads 2</p>
+                {%if ad_left_top == 'img'%}
+                    <img class="embed-responsive-item" SRC= "{% static '2.jpg' %}" >
+                {%elif ad_left_top == 'gif'%}
+                    <img class="embed-responsive-item" SRC= "{% static '2.gif' %}" >
+                {% elif ad_left_top == 'video' %}
+                    <video name='demo' controls autoplay muted loop >
+                        <source src="{% static '2.mp4' %}" type="video/mp4"></source>
+                    </video>
+                {% endif %}
+            </div>
+            <div class="embed-responsive embed-responsive-4by3">
+              <p>Ads 3</p>
+                {%if ad_left_bottom == 'img'%}
+                    <img class="embed-responsive-item" SRC= "{% static '3.jpg' %}" >
+                {%elif ad_left_bottom == 'gif'%}
+                    <img class="embed-responsive-item" SRC= "{% static '3.gif' %}" >
+                {% elif ad_left_bottom == 'video' %}
+                    <video name='demo' controls autoplay muted loop >
+                        <source src="{% static '3.mp4' %}" type="video/mp4"></source>
+                    </video>
+                {% endif %}
+            </div>
+
+        </div>
+        <div class="col-sm-6 text-left">
+          <h1>Hello Handsome</h1>
+          <p>:-)</p>
+          <hr>
+        </div>
+
+        <div class="col-sm-3 sidenav">
+          <div class="embed-responsive embed-responsive-4by3">
+            <p>Ads 4</p>
+              {%if ad_right_top == 'img'%}
+                <img class="embed-responsive-item" SRC= "{% static '5.jpg' %}" >
+            {%elif ad_right_top == 'gif'%}
+                <img class="embed-responsive-item" SRC= "{% static '5.gif' %}" >
+            {% elif ad_right_top == 'video' %}
+                <video name='demo' controls autoplay muted loop >
+                    <source src="{% static '5.mp4' %}" type="video/mp4"></source>
+                </video>
+            {% endif %}
+
+          </div>
+          <div class="embed-responsive embed-responsive-4by3">
+            <p>Ads 5</p>
+            {%if ad_right_bottom == 'img'%}
+                <img class="embed-responsive-item" SRC= "{% static '4.jpg' %}" >
+            {%elif ad_right_bottom == 'gif'%}
+                <img class="embed-responsive-item" SRC= "{% static '4.gif' %}" >
+            {% elif ad_right_bottom == 'video' %}
+                <video name='demo' controls autoplay muted loop >
+                    <source src="{% static '4.mp4' %}" type="video/mp4"></source>
+                </video>
+            {% endif %}
+          </div>
+        </div>
+    </div>
+</div>
+<footer class="container-fluid text-center">
+    <marquee behavior="scroll" direction="left">End of season sale: 10% off on Peter England. Mufti jeans: Buy 1 and get 1 free.</marquee>
+</footer>
+
+</body>
+</html>

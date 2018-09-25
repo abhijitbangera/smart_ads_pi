@@ -41,6 +41,11 @@
     padding: 15px;
     }
 
+    video {
+    max-width: 100%;
+    height: auto;
+    }
+
     /* On small screens, set height to 'auto' for sidenav and grid */
     @media screen and (max-width: 767px) {
       .sidenav {
@@ -53,6 +58,7 @@
   </style>
 </head>
 <body>
+{% load staticfiles %}
 
 <nav class="navbar navbar-inverse">
   <div class="container-fluid">
@@ -74,14 +80,26 @@
     <div class="row content">
         <div class="col-sm-3 sidenav">
          <a class="navbar-brand" href="#">Ad 2</a>
-            <IMG SRC="https://media.giphy.com/media/D7MPavzY5YsKY/giphy.gif">
+            {%if ad_left_top == 'img'%}
+                <IMG SRC= "{% static '2.jpg' %}" >
+            {%elif ad_left_top == 'gif'%}
+                <IMG SRC= "{% static '2.gif' %}" >
+            {% elif ad_left_top == 'video' %}
+                <video name='demo' controls autoplay muted loop >
+                    <source src="{% static '3.mp4' %}" type="video/mp4"></source>
+                </video>
+            {% endif %}
             <p>Ads 3</p>
-              <iframe src="https://www.youtube.com/embed/8xCqmYbXH9w?showinfo=0&controls=0&autohide=1&loop=1&&playlist=8xCqmYbXH9w&mute=1&autoplay=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-
+            {%if ad_left_bottom == 'img'%}
+            <IMG SRC= {{value}} >
+            {% elif ad_left_bottom == 'video' %}
+                <video name='demo' controls autoplay muted loop >
+                    <source src="{% static '3.mp4' %}" type="video/mp4"></source>
+                </video>
+            {% endif %}
         </div>
         <div class="col-sm-5 text-left">
           <h1>Hello Handsome</h1>
-          <p>:-)</p>
           <p>:-)</p>
           <hr>
         </div>
@@ -89,7 +107,16 @@
         <div class="col-sm-4 sidenav">
           <div class="well">
             <p>Ads 3</p>
-              <iframe src="https://www.youtube.com/embed/8xCqmYbXH9w?showinfo=0&controls=0&autohide=1&loop=1&&playlist=8xCqmYbXH9w&mute=1&autoplay=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+              {% for key, value in ad_left_bottom.items %}
+                    {% if key == 1 %}
+                        <video name='demo' controls autoplay muted loop >
+                            <source src="{% static '4.mp4' %}" type="video/mp4"></source>
+                        </video>
+                    {% elif key == 2 %}
+                        {{value}}
+                        <IMG SRC= {{value}} >
+                    {% endif %}
+            {% endfor %}
           </div>
           <div class="well">
             <p>Ads 4</p>
