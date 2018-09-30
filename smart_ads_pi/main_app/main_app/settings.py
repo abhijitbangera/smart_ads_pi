@@ -126,3 +126,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "static", "media_root")
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static", "static_dirs"),
 )
+
+
+# Variables to be set for customer
+client_id = 2
+url='http://127.0.0.1:8000/'
