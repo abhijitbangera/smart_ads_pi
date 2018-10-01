@@ -129,5 +129,6 @@ STATICFILES_DIRS = (
 
 
 # Variables to be set for customer
-client_id = 2
+client_id = 5
+client_username='mi'
 url='http://127.0.0.1:8000/'

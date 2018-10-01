@@ -15,6 +15,7 @@ import requests
 import json
 import main_app.settings as settings
 from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 
 
 
@@ -54,18 +55,23 @@ def get_api(id):
     url= settings.url
     response = requests.get(url+'api/clientads/?id='+str(id))
     json_data = json.loads(response.text)
-    print ('.....')
-    print (json_data)
-    print (User.objects.get(username=json_data[0]['client_id']))
-    print ('.....')
-    my_record = adsDetails.objects.get(client_id_id=User.objects.get(username=json_data[0]['client_id']))
-    my_record.header=json_data[0]['header']
-    my_record.left_top = json_data[0]['left_top']
-    my_record.left_bottom = json_data[0]['left_bottom']
-    my_record.right_top = json_data[0]['right_top']
-    my_record.right_bottom = json_data[0]['right_bottom']
-    my_record.footer = json_data[0]['footer']
-    my_record.save()
+    if len(json_data)>0:
+        print ('.....')
+        print (json_data)
+        print (User.objects.get(username=json_data[0]['client_id']))
+        print ('.....')
+        print (User.objects.get(username=json_data[0]['client_id']))
+        # User.objects.get_or_create(username=json_data[0]['client_id'])
+        # my_record = adsDetails.objects.get_or_create(client_id_id=User.objects.get(username=json_data[0]['client_id']))
+        my_record, created = adsDetails.objects.get_or_create(client_id=settings.client_id)
+        my_record.header=json_data[0]['header']
+        my_record.left_top = json_data[0]['left_top']
+        my_record.left_bottom = json_data[0]['left_bottom']
+        my_record.right_top = json_data[0]['right_top']
+        my_record.right_bottom = json_data[0]['right_bottom']
+        my_record.footer = json_data[0]['footer']
+        my_record.update_flag = 1
+        my_record.save()
     return json_data
 
 def post_api(json_data, id):
@@ -117,26 +123,40 @@ def parse_url(value_from_db, file_name, download_flag):
 
 
 def test(request):
-    my_record = adsDetails.objects.filter(client_id_id=settings.client_id).values()
-    print (my_record)
-    print (settings.client_id)
+    User.objects.all().delete()
+    UserModel = get_user_model()
+    if not UserModel.objects.filter(username=settings.client_username).exists():
+        user = UserModel.objects.create_user(settings.client_username, password='abhijit1234')
+        user.is_superuser = False
+        user.is_staff = False
+        user.save()
+
+
+
+
     # print (get_api(request.user.id))
     api_response = get_api(settings.client_id)
-    download_flag=  (api_response[0]['update_flag'])
-    ad_header = my_record[0]['header'] #ad1
-    ad_left_top = parse_url(my_record[0]['left_top'], '2', download_flag) #ad2
-    ad_left_bottom = parse_url(my_record[0]['left_bottom'], '3', download_flag) #ad3
-    ad_right_bottom = parse_url(my_record[0]['right_bottom'],'4', download_flag) #ad4
-    ad_right_top = parse_url(my_record[0]['right_top'],'5', download_flag) #ad5
-    ad_footer = parse_url(my_record[0]['footer'],'6', download_flag) #ad6
-    post_api(api_response, settings.client_id)
-    context = {
-        'ad_header':ad_header,
-        'ad_left_top':ad_left_top,
-        'ad_left_bottom':ad_left_bottom,
-        'ad_right_bottom':ad_right_bottom,
-        'ad_right_top':ad_right_top,
-        'ad_footer':ad_footer
-    }
-    print (ad_header)
+    if len(api_response) == 0:
+        context={}
+    else:
+        my_record = adsDetails.objects.filter(client_id=settings.client_id).values()
+        print(my_record)
+        print(settings.client_id)
+        download_flag=  (api_response[0]['update_flag'])
+        ad_header = my_record[0]['header'] #ad1
+        ad_left_top = parse_url(my_record[0]['left_top'], '2', download_flag) #ad2
+        ad_left_bottom = parse_url(my_record[0]['left_bottom'], '3', download_flag) #ad3
+        ad_right_bottom = parse_url(my_record[0]['right_bottom'],'4', download_flag) #ad4
+        ad_right_top = parse_url(my_record[0]['right_top'],'5', download_flag) #ad5
+        ad_footer = parse_url(my_record[0]['footer'],'6', download_flag) #ad6
+        post_api(api_response, settings.client_id)
+        context = {
+            'ad_header':ad_header,
+            'ad_left_top':ad_left_top,
+            'ad_left_bottom':ad_left_bottom,
+            'ad_right_bottom':ad_right_bottom,
+            'ad_right_top':ad_right_top,
+            'ad_footer':ad_footer
+        }
+        print (ad_header)
     return render(request, 'index2.html', context=context)
