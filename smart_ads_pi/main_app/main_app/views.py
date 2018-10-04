@@ -16,7 +16,11 @@ import json
 import main_app.settings as settings
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
-
+import threading
+import cv2
+from django.http import StreamingHttpResponse
+from django.views.decorators.gzip import gzip_page
+import numpy as np
 
 
 def download_image(url, file_name):
@@ -160,3 +164,67 @@ def test(request):
         }
         print (ad_header)
     return render(request, 'index2.html', context=context)
+
+def detect(gray, frame):
+    face_cascade = cv2.CascadeClassifier(os.getcwd() + os.sep + 'haarcascade_frontalface_default.xml')
+    smile_cascade = cv2.CascadeClassifier(os.getcwd() + os.sep + 'haarcascade_smile.xml')
+    faces = face_cascade.detectMultiScale(gray, 1.3, 5)
+    print ('...')
+    for (x, y, w, h) in faces:
+        print("Detected face")
+        cv2.rectangle(frame, (x, y), (x+w, y+h), (255, 0, 0), 2)
+        roi_gray = gray[y:y+h, x:x+w]
+        roi_color = frame[y:y+h, x:x+w]
+        # eyes = eye_cascade.detectMultiScale(roi_gray, 1.1, 22)
+        # for (ex, ey, ew, eh) in eyes:
+        #     cv2.rectangle(roi_color, (ex, ey), (ex+ew, ey+eh), (0, 255, 0), 2)
+        smiles = smile_cascade.detectMultiScale(roi_gray, 1.7, 22)
+        for (sx, sy, sw, sh) in smiles:
+            cv2.rectangle(roi_color, (sx, sy), (sx+sw, sy+sh), (0, 0, 255), 2)
+            print ("Smile detected")
+    return frame
+
+def face_detect(frame):
+
+    # eye_cascade = cv2.CascadeClassifier('haarcascade_eye.xml')
+
+
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    canvas = detect(gray, frame)
+
+
+class VideoCamera(object):
+    def __init__(self):
+        self.video = cv2.VideoCapture(0)
+        (self.grabbed, self.frame) = self.video.read()
+        threading.Thread(target=self.update, args=()).start()
+
+    def __del__(self):
+        self.video.release()
+
+    def get_frame(self):
+        image = self.frame
+        ret, jpeg = cv2.imencode('.jpg', image)
+        face_detect(image)
+        return jpeg.tobytes()
+
+    def update(self):
+        while True:
+            (self.grabbed, self.frame) = self.video.read()
+
+
+cam = VideoCamera()
+
+def gen(camera):
+    while True:
+        frame = camera.get_frame()
+        yield(b'--frame\r\n'
+        b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
+
+@gzip_page
+def livefe(request):
+    try:
+        print (os.getcwd())
+        return StreamingHttpResponse(gen(VideoCamera()), content_type="multipart/x-mixed-replace;boundary=frame")
+    except:  # This is bad! replace it with proper handling
+        print("aborted")

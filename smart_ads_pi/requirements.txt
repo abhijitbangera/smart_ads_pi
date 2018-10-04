@@ -1,12 +1,5 @@
-beautifulsoup4==4.6.0
-certifi==2018.8.24
-chardet==3.0.4
-Django==2.1.1
-djangorestframework==3.8.2
-idna==2.7
-lxml==4.1.1
-python-vlc==3.0.102
-pytube==9.0.6
-pytz==2018.5
-requests==2.19.1
-urllib3==1.23
+get==1.0.3
+post==1.0.2
+public==1.0.3
+query-string==1.0.2
+request==1.0.2

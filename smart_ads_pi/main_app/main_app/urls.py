@@ -20,4 +20,5 @@ from main_app import views as main_app_view
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url('^$',main_app_view.test, name='test' ),
+    url('^livefe/$',main_app_view.livefe, name='test' ),
 ]
